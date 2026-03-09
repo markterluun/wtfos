@@ -1,15 +1,11 @@
-ENTRY(_start)
+ENTRY(user_entry)
 
 SECTIONS
 {
-    . = 0x10000;
+    . = 0x00400000;
 
     .text : {
         *(.text*)
-    }
-
-    .userprog : {
-        *(.userprog*)
     }
 
     .rodata : {

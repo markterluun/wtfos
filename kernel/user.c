@@ -1,13 +1,13 @@
 #include <stdint.h>
 
+#include "system.h"
 #include "user.h"
 
 #define USER_CODE_SEL 0x1B
 #define USER_DATA_SEL 0x23
-#define USER_STACK_TOP 0x8F000u
 
 __attribute__((noreturn)) void enter_user_mode(void (*entry)(void)) {
-    uint32_t user_stack = USER_STACK_TOP;
+    const uint32_t user_stack = USER_STACK_TOP;
 
     __asm__ volatile (
         "movw %[user_data], %%ax\n\t"

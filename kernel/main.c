@@ -1,20 +1,14 @@
 #include "io.h"
+#include "system.h"
 #include "user.h"
-
-static void user_main(void);
 
 void kmain(void) {
     kio_init();
-    kio_println("Basic kernel IO online");
-    kio_println("Switching to user space...");
-    
-    enter_user_mode(user_main);
-}
+    kio_println("Kernel online");
+    kio_println("Init GDT/TSS/IDT/Paging...");
 
-static void user_main(void) {
-    kio_println("Entered user space (ring 3)");
+    kernel_arch_init();
 
-    for (;;) {
-        __asm__ volatile ("jmp .");
-    }
+    kio_println("Switching to isolated user process...");
+    enter_user_mode((void (*)(void))USER_CODE_VADDR);
 }
