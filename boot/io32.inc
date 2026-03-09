@@ -1,3 +1,5 @@
+cursor_pos  dd 0
+
 clear_screen:
     mov edi, 0xB8000
     mov ecx, 80 * 25
