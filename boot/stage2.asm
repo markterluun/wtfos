@@ -17,6 +17,9 @@ start_stage2:
     mov si, msg_a20
     call print_string
 
+    mov si, delay_2s
+    call delay
+
     cli
     lgdt [gdt_descriptor]
 
@@ -26,26 +29,18 @@ start_stage2:
 
     jmp 0x08:protected_mode_start
 
-print_string:
-.next:
-    lodsb
-    test al, al
-    jz .done
-    mov ah, 0x0E
-    mov bh, 0
-    int 0x10
-    jmp .next
-.done:
-    ret
-
 enable_a20:
     in al, 0x92
     or al, 00000010b
     out 0x92, al
     ret
 
-msg_stage2 db 'Stage 2 loaded', 13, 10, 0
-msg_a20    db 'A20 enabled', 13, 10, 0
+%include "io16.inc"
+
+msg_stage2  db 'Stage 2 loaded', 13, 10, 0
+msg_a20     db 'A20 enabled', 13, 10, 0
+
+delay_2s    dd 2000000
 
 align 8
 gdt_start:
@@ -82,44 +77,7 @@ protected_mode_start:
     hlt
     jmp .hang
 
-clear_screen:
-    mov edi, 0xB8000
-    mov ecx, 80 * 25
-    mov ax, 0x0720
-.clear_loop:
-    mov word [edi], ax
-    add edi, 2
-    loop .clear_loop
-
-    mov dword [cursor_pos], 0
-    ret
-
-print_string_pm:
-.next:
-    lodsb
-    test al, al
-    jz .done
-    call print_char_pm
-    jmp .next
-.done:
-    ret
-
-print_char_pm:
-    push ebx
-    push edi
-
-    mov ebx, [cursor_pos]
-    mov edi, 0xB8000
-    add edi, ebx
-
-    mov ah, 0x07
-    mov [edi], ax
-
-    add dword [cursor_pos], 2
-
-    pop edi
-    pop ebx
-    ret
+%include "io32.inc"
 
 cursor_pos dd 0
 msg_pm32 db 'PM32 OK', 0
