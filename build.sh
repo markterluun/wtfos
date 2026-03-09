@@ -11,8 +11,9 @@ nasm -I ./boot/ -f bin boot/boot.asm -o build/boot.bin
 nasm -I ./boot/ -f bin boot/stage2.asm -o build/stage2.bin
 
 nasm -f elf32 kernel/entry.asm -o build/entry.o
+gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/io.c -o build/io.o
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/main.c -o build/main.o
-ld -m elf_i386 -T kernel/linker.ld -o build/kernel.elf build/entry.o build/main.o
+ld -m elf_i386 -T kernel/linker.ld -o build/kernel.elf build/entry.o build/io.o build/main.o
 objcopy -O binary build/kernel.elf build/kernel.bin
 
 kernel_size=$(stat -c%s build/kernel.bin)
