@@ -27,9 +27,6 @@ start_stage2:
     mov si, msg_kernel_loaded
     call print_string
 
-    mov si, delay_2s
-    call delay
-
     cli
     lgdt [gdt_descriptor]
 
@@ -74,8 +71,6 @@ msg_stage2          db 'Stage 2 loaded', 13, 10, 0
 msg_a20             db 'A20 enabled', 13, 10, 0
 msg_kernel_loaded   db 'Kernel loaded', 13, 10, 0
 msg_kernel_error    db 'Kernel read error', 13, 10, 0
-
-delay_2s            dd 2000000
 
 align 8
 gdt_start:
