@@ -12,6 +12,11 @@ start:
 
     mov [boot_drive], dl
 
+    ; Wait for the user to press a key
+    mov si, msg_wait
+    call print_string
+    call pause
+
     ; Load stage2.bin to 0000:8000
     xor ax, ax
     mov es, ax
@@ -30,21 +35,18 @@ start:
 
 disk_error:
     mov si, msg_disk_error
-.print:
-    lodsb
-    test al, al
-    jz .hang
-    mov ah, 0x0E
-    mov bh, 0
-    int 0x10
-    jmp .print
+    call print_string
 
 .hang:
     cli
     hlt
     jmp .hang
 
+%include "io16.inc"
+
 boot_drive db 0
+
+msg_wait       db 'Press any key to continue...', 13, 10, 0
 msg_disk_error db 'Disk read error', 0
 
 times 510 - ($ - $$) db 0
