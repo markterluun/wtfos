@@ -1,6 +1,11 @@
 BITS 16
 ORG 0x8000
 
+KERNEL_LOAD_SEGMENT equ 0x1000
+KERNEL_SECTORS      equ 8
+KERNEL_START_SECTOR equ 6
+STAGE2_SECTORS      equ 4
+
 start_stage2:
     cli
     xor ax, ax
@@ -17,6 +22,11 @@ start_stage2:
     mov si, msg_a20
     call print_string
 
+    call load_kernel
+
+    mov si, msg_kernel_loaded
+    call print_string
+
     mov si, delay_2s
     call delay
 
@@ -29,6 +39,29 @@ start_stage2:
 
     jmp 0x08:protected_mode_start
 
+load_kernel:
+    mov ax, KERNEL_LOAD_SEGMENT
+    mov es, ax
+    xor bx, bx
+
+    mov ah, 0x02               ; BIOS read sectors
+    mov al, KERNEL_SECTORS
+    mov ch, 0
+    mov cl, KERNEL_START_SECTOR
+    mov dh, 0
+    int 0x13
+    jc kernel_load_error
+    ret
+
+kernel_load_error:
+    mov si, msg_kernel_error
+    call print_string
+
+.hang:
+    cli
+    hlt
+    jmp .hang
+
 enable_a20:
     in al, 0x92
     or al, 00000010b
@@ -37,10 +70,12 @@ enable_a20:
 
 %include "io16.inc"
 
-msg_stage2  db 'Stage 2 loaded', 13, 10, 0
-msg_a20     db 'A20 enabled', 13, 10, 0
+msg_stage2          db 'Stage 2 loaded', 13, 10, 0
+msg_a20             db 'A20 enabled', 13, 10, 0
+msg_kernel_loaded   db 'Kernel loaded', 13, 10, 0
+msg_kernel_error    db 'Kernel read error', 13, 10, 0
 
-delay_2s    dd 2000000
+delay_2s            dd 2000000
 
 align 8
 gdt_start:
@@ -69,15 +104,8 @@ protected_mode_start:
 
     call clear_screen
 
-    mov esi, msg_pm32
-    call print_string_pm
-
-.hang:
-    cli
-    hlt
-    jmp .hang
+    jmp 0x10000
 
 %include "io32.inc"
 
-cursor_pos dd 0
-msg_pm32 db 'PM32 OK', 0
+times STAGE2_SECTORS * 512 - ($ - $$) db 0
