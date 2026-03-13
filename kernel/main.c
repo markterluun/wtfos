@@ -1,6 +1,8 @@
 #include "io.h"
 #include "disk.h"
 
+void test_disk_io();
+
 void kmain(void) {
     kio_init();
     kio_println("Hello World from C");
@@ -21,8 +23,16 @@ void kmain(void) {
         kio_println("Disk identify failed");
     }
 
-    // Test disk read
+    test_disk_io();
+
+    for (;;) {
+        __asm__ volatile ("hlt");
+    }
+}
+
+void test_disk_io() {
     uint8_t buffer[512];
+
     // First, write some data to sector 0
     for (int i = 0; i < 512; i++) {
         buffer[i] = (uint8_t)i;
@@ -51,9 +61,5 @@ void kmain(void) {
         }
     } else {
         kio_println("Disk read failed");
-    }
-
-    for (;;) {
-        __asm__ volatile ("hlt");
     }
 }
