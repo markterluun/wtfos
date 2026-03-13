@@ -1,6 +1,7 @@
 #include "io.h"
 #include "disk.h"
 
+void init_disk_io();
 void test_disk_io();
 
 void kmain(void) {
@@ -8,6 +9,14 @@ void kmain(void) {
     kio_println("Hello World from C");
     kio_println("Basic kernel IO online");
 
+    init_disk_io();
+
+    for (;;) {
+        __asm__ volatile ("hlt");
+    }
+}
+
+void init_disk_io() {
     // Initialize disk
     if (!disk_init()) {
         kio_println("Disk initialization failed");
@@ -21,12 +30,6 @@ void kmain(void) {
         kio_println("Disk identify successful");
     } else {
         kio_println("Disk identify failed");
-    }
-
-    test_disk_io();
-
-    for (;;) {
-        __asm__ volatile ("hlt");
     }
 }
 
