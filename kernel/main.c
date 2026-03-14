@@ -1,6 +1,7 @@
 #include "io.h"
 #include "disk.h"
 #include "memory.h"
+#include "string.h"
 
 void init_disk_io();
 void test_disk_io();
@@ -25,6 +26,15 @@ void init_disk_io() {
         kio_println("Memory allocation successful");
     } else {
         kio_println("Memory allocation failed");
+    }
+
+    // Test string functions
+    char *test_str = (char *)kmalloc(20);
+    strcpy(test_str, "Hello");
+    if (strcmp(test_str, "Hello") == 0) {
+        kio_println("String functions working");
+    } else {
+        kio_println("String functions failed");
     }
 
     // Initialize disk
