@@ -5,6 +5,8 @@
 
 void init_disk_io();
 void test_disk_io();
+void test_mem_io();
+void test_string_io();
 
 void kmain(void) {
     kio_init();
@@ -19,24 +21,6 @@ void kmain(void) {
 }
 
 void init_disk_io() {
-    // Test memory allocation
-    void *ptr1 = kmalloc(100);
-    void *ptr2 = kmalloc(200);
-    if (ptr1 && ptr2) {
-        kio_println("Memory allocation successful");
-    } else {
-        kio_println("Memory allocation failed");
-    }
-
-    // Test string functions
-    char *test_str = (char *)kmalloc(20);
-    strcpy(test_str, "Hello");
-    if (strcmp(test_str, "Hello") == 0) {
-        kio_println("String functions working");
-    } else {
-        kio_println("String functions failed");
-    }
-
     // Initialize disk
     if (!disk_init()) {
         kio_println("Disk initialization failed");
@@ -84,5 +68,29 @@ void test_disk_io() {
         }
     } else {
         kio_println("Disk read failed");
+    }
+}
+
+void test_mem_io() {
+    // Test memory allocation
+    void *ptr1 = kmalloc(100);
+    void *ptr2 = kmalloc(200);
+    if (ptr1 && ptr2) {
+        kio_println("Memory allocation successful");
+    } else {
+        kio_println("Memory allocation failed");
+    }
+}
+
+void test_string_io() {
+    // Test string functions
+    char *str1 = (char *)kmalloc(20);
+    char *str2 = (char *)kmalloc(20);
+    strcpy(str1, "Hello");
+    strcpy(str2, "World");
+    if (strcmp(str1, "Hello") == 0 && strcmp(str2, "World") == 0) {
+        kio_println("String functions working");
+    } else {
+        kio_println("String functions failed");
     }
 }
