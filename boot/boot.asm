@@ -1,6 +1,30 @@
 BITS 16
 ORG 0x7C00
 
+jmp short start
+nop
+
+; FAT12 BPB
+db 'MSWIN4.1'          ; OEM name (8 bytes)
+dw 512                 ; bytes per sector
+db 1                   ; sectors per cluster
+dw 1                   ; reserved sectors
+db 2                   ; number of FATs
+dw 224                 ; root directory entries
+dw 2880                ; total sectors (1.44MB)
+db 0xF0                ; media descriptor
+dw 9                   ; sectors per FAT
+dw 18                  ; sectors per track
+dw 2                   ; number of heads
+dd 0                   ; hidden sectors
+dd 0                   ; total sectors (large)
+db 0                   ; drive number
+db 0                   ; reserved
+db 0x29                ; extended boot signature
+dd 0x12345678          ; volume serial number
+db 'WTFOS      '       ; volume label (11 bytes)
+db 'FAT12   '          ; file system type (8 bytes)
+
 STAGE2_SECTORS equ 4
 
 start:

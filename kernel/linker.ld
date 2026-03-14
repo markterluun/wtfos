@@ -17,7 +17,11 @@ SECTIONS
     }
 
     .bss : {
+        _bss_start = .;
         *(.bss*)
         *(COMMON)
+        _bss_end = .;
     }
+
+    _end = .;
 }
