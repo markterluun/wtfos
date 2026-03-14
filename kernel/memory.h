@@ -6,7 +6,7 @@
 typedef unsigned int size_t;
 #define NULL ((void*)0)
 
-#define HEAP_SIZE 4096  // 4KB heap
+#define HEAP_SIZE 0x8000  // 32KB heap
 
 void *kmalloc(size_t size);
 void kfree(void *ptr);
