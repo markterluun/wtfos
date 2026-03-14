@@ -17,6 +17,11 @@ void kmain(void) {
 
     init_disk_io();
 
+    test_disk_io();
+    test_mem_io();
+    test_string_io();
+    test_endian_io();
+
     for (;;) {
         __asm__ volatile ("hlt");
     }
@@ -88,6 +93,11 @@ void test_string_io() {
     // Test string functions
     char *str1 = (char *)kmalloc(20);
     char *str2 = (char *)kmalloc(20);
+    if (!str1 || !str2) {
+        kio_println("String test: memory allocation failed");
+        return;
+    }
+    
     strcpy(str1, "Hello");
     strcpy(str2, "World");
     if (strcmp(str1, "Hello") == 0 && strcmp(str2, "World") == 0) {

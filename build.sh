@@ -3,7 +3,7 @@
 set -euo pipefail
 
 STAGE2_SECTORS=4
-KERNEL_SECTORS=10
+KERNEL_SECTORS=20
 
 mkdir -p build
 
