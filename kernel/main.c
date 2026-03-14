@@ -3,6 +3,7 @@
 #include "memory.h"
 #include "string.h"
 #include "endian.h"
+#include "fat12.h"
 
 void init_disk_io();
 void test_disk_io();
@@ -10,7 +11,15 @@ void test_mem_io();
 void test_string_io();
 void test_endian_io();
 
+extern char _bss_start[];
+extern char _bss_end[];
+
+void zero_bss() {
+    memset(_bss_start, 0, _bss_end - _bss_start);
+}
+
 void kmain(void) {
+    zero_bss();
     kio_init();
     kio_println("Hello World from C");
     kio_println("Basic kernel IO online");
@@ -41,6 +50,23 @@ void init_disk_io() {
         kio_println("Disk identify successful");
     } else {
         kio_println("Disk identify failed");
+    }
+
+    // Test FAT12
+    if (fat12_init() == 0) {
+        kio_println("Listing directory:");
+        fat12_list_dir();
+        // Test read
+        uint8_t buffer[512];
+        uint32_t size;
+        if (fat12_read_file("TEST    TXT", buffer, &size) == 0) {
+            kio_println("Read test file");
+        }
+        // Test write
+        const char *data = "Hello from kernel!";
+        if (fat12_write_file("KERNEL  TXT", (uint8_t*)data, strlen(data)) == 0) {
+            kio_println("Wrote kernel file");
+        }
     }
 }
 
@@ -97,7 +123,7 @@ void test_string_io() {
         kio_println("String test: memory allocation failed");
         return;
     }
-    
+
     strcpy(str1, "Hello");
     strcpy(str2, "World");
     if (strcmp(str1, "Hello") == 0 && strcmp(str2, "World") == 0) {

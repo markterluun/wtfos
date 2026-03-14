@@ -16,8 +16,9 @@ gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kern
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/memory.c -o build/memory.o
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/string.c -o build/string.o
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/endian.c -o build/endian.o
+gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/fat12.c -o build/fat12.o
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/main.c -o build/main.o
-ld -m elf_i386 -T kernel/linker.ld -o build/kernel.elf build/entry.o build/io.o build/disk.o build/memory.o build/string.o build/endian.o build/main.o
+ld -m elf_i386 -T kernel/linker.ld -o build/kernel.elf build/entry.o build/io.o build/disk.o build/memory.o build/string.o build/endian.o build/fat12.o build/main.o
 objcopy -O binary build/kernel.elf build/kernel.bin
 
 kernel_size=$(stat -c%s build/kernel.bin)
