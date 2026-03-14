@@ -1,5 +1,6 @@
 #include "io.h"
 #include "disk.h"
+#include "memory.h"
 
 void init_disk_io();
 void test_disk_io();
@@ -17,6 +18,15 @@ void kmain(void) {
 }
 
 void init_disk_io() {
+    // Test memory allocation
+    void *ptr1 = kmalloc(100);
+    void *ptr2 = kmalloc(200);
+    if (ptr1 && ptr2) {
+        kio_println("Memory allocation successful");
+    } else {
+        kio_println("Memory allocation failed");
+    }
+
     // Initialize disk
     if (!disk_init()) {
         kio_println("Disk initialization failed");
