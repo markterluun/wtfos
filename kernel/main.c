@@ -2,11 +2,13 @@
 #include "disk.h"
 #include "memory.h"
 #include "string.h"
+#include "endian.h"
 
 void init_disk_io();
 void test_disk_io();
 void test_mem_io();
 void test_string_io();
+void test_endian_io();
 
 void kmain(void) {
     kio_init();
@@ -92,5 +94,16 @@ void test_string_io() {
         kio_println("String functions working");
     } else {
         kio_println("String functions failed");
+    }
+}
+
+void test_endian_io() {
+    // Test endian conversion
+    uint16_t test16 = 0x1234;
+    uint32_t test32 = 0x12345678;
+    if (le16toh(htole16(test16)) == test16 && le32toh(htole32(test32)) == test32) {
+        kio_println("Endian conversion working");
+    } else {
+        kio_println("Endian conversion failed");
     }
 }

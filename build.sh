@@ -3,7 +3,7 @@
 set -euo pipefail
 
 STAGE2_SECTORS=4
-KERNEL_SECTORS=8
+KERNEL_SECTORS=10
 
 mkdir -p build
 
@@ -15,8 +15,9 @@ gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kern
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/disk.c -o build/disk.o
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/memory.c -o build/memory.o
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/string.c -o build/string.o
+gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/endian.c -o build/endian.o
 gcc -m32 -ffreestanding -fno-stack-protector -fno-pic -fno-pie -nostdlib -c kernel/main.c -o build/main.o
-ld -m elf_i386 -T kernel/linker.ld -o build/kernel.elf build/entry.o build/io.o build/disk.o build/memory.o build/string.o build/main.o
+ld -m elf_i386 -T kernel/linker.ld -o build/kernel.elf build/entry.o build/io.o build/disk.o build/memory.o build/string.o build/endian.o build/main.o
 objcopy -O binary build/kernel.elf build/kernel.bin
 
 kernel_size=$(stat -c%s build/kernel.bin)
